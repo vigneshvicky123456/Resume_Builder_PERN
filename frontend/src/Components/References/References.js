@@ -1,105 +1,53 @@
-import React, { useEffect, useRef, useState } from "react";
-//import { FaTrashAlt } from "react-icons/fa";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
-const EditExperienceField = ({ label, value, setValue, isEditing, toggleEdit, placeholder, frontLabel, width, padding, onDelete }) => {
-  const inputRef = useRef(null);
+const References = () => {
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (isEditing && inputRef.current) inputRef.current.focus();
-  }, [isEditing]);
+  const addReference = () => {
+    navigate("/referenceForm");
+  };
 
-  const handleInputChange = (e) => setValue(e.target.value);
-  const handleBlur = () => {
-    if (!value.trim()) toggleEdit(false);
+  const backButton = () => {
+    navigate("../summary");
+  };
+
+  const continueButton = () => {
+    //navigate("../certifications");
   };
 
   return (
-    <div className={`relative ${padding} mb-3`}>
-      {!isEditing && !value.trim() ? (
-        <p
-          className={`text-gray-400 ${width} bg-white p-3 border rounded-lg cursor-pointer`}
-          onClick={() => toggleEdit(true)}
-        >
-          {frontLabel}
-        </p>
-      ) : (
+    <div className="bg-blue-50 h-full w-[97%] px-10 py-10 flex rounded-2xl">
+      <div className="h-full w-full px-10">
+        <div>
+          <h1 className="font-bold text-4xl pb-3">Add Reference</h1>
+        </div>
+
         <div
-          className={`relative ${width} bg-white px-2 border-2 rounded-lg focus-within:border-black flex items-center`}
+          className="mt-10 border rounded-lg border-black font-bold  py-[65px] flex justify-center"
+          onClick={addReference}
         >
-          <label className="text-xs text-gray-400 block mb-1 flex items-center">
-            {label}
-            {value.trim() && <span className="ml-2 text-black font-bold">&#10003;</span>}
-          </label>
-          <input
-            ref={inputRef}
-            value={value}
-            onChange={handleInputChange}
-            onBlur={handleBlur}
-            className="pb-1 w-full outline-none"
-            placeholder={placeholder}
-          />
+          <span>O</span>
+          <p className="pl-2 hover:underline cursor-pointer">Add reference</p>
+        </div>
+
+        <div className="my-[40px] text-lg flex justify-center">
           <button
-            onClick={onDelete}
-            className="ml-2 text-red-500 hover:text-red-700"
-            title="Delete"
+            className="bg-white w-[30%] p-3 border font-bold rounded-lg mr-4 transition-transform duration-300 ease-in-out hover:border-black hover:-translate-y-1"
+            onClick={backButton}
           >
-          dd  {/* <FaTrashAlt /> */}
+            Back
+          </button>
+          <button
+            className="bg-black w-[30%] text-white p-3 border font-bold rounded-lg transition-transform duration-300 ease-in-out hover:-translate-y-1"
+            onClick={continueButton}
+          >
+            Continue
           </button>
         </div>
-      )}
+      </div>
     </div>
   );
 };
 
-const ExperienceFieldsManager = () => {
-  const [fields, setFields] = useState([{ id: 1, value: "", isEditing: true }]);
-
-  const handleAddField = () => {
-    const newField = {
-      id: fields.length + 1,
-      value: "",
-      isEditing: true,
-    };
-    setFields([...fields, newField]);
-  };
-
-  const handleUpdateField = (id, newValue) => {
-    setFields(fields.map((field) => (field.id === id ? { ...field, value: newValue } : field)));
-  };
-
-  const handleToggleEdit = (id, isEditing) => {
-    setFields(fields.map((field) => (field.id === id ? { ...field, isEditing } : field)));
-  };
-
-  const handleDeleteField = (id) => {
-    setFields(fields.filter((field) => field.id !== id));
-  };
-
-  return (
-    <div className="p-4">
-      {fields.map((field) => (
-        <EditExperienceField
-          key={field.id}
-          label={`Experience ${field.id}`}
-          value={field.value}
-          setValue={(value) => handleUpdateField(field.id, value)}
-          isEditing={field.isEditing}
-          toggleEdit={(isEditing) => handleToggleEdit(field.id, isEditing)}
-          placeholder="Enter your experience"
-          frontLabel="Click to add experience"
-          width="w-full"
-          padding="p-2"
-          onDelete={() => handleDeleteField(field.id)}
-        />
-      ))}
-      <button
-        onClick={handleAddField}
-        className="mt-3 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-      >
-        Add Experience
-      </button>
-    </div>
-  );
-};
-
-export default ExperienceFieldsManager;
+export default References;

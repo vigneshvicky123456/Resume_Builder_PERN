@@ -9,12 +9,14 @@ import Resume from "./Pages/Resume";
 import SideNavbar from "./Components/Navbar/SideNavbar";
 import Contact from "./Components/Contact/Contact";
 import Experience from "./Components/Experience/Experience";
+import ExperienceForm from "./Components/Experience/ExperienceForm";
 import Education from "./Components/Education/Education";
 import EducationForm from "./Components/Education/EducationForm";
 import Certifications from "./Components/Certifications/Certifications";
 import Skills from "./Components/Skills/Skills";
 import Summary from "./Components/Summary/Summary";
 import References from "./Components/References/References";
+import ReferenceForm from "./Components/References/ReferenceForm";
 
 const App = () => {
   return (
@@ -26,10 +28,11 @@ const App = () => {
           
           <Route path="/" element={<TopNavbar />} >
             <Route path="/dashboard" element={<ProtectedRoute> <Dashboard /> </ProtectedRoute>} />
-
-            <Route path="/resume" element={<SideNavbar />} >
-              <Route path="/resume" element={<Resume />} />
-              <Route index element={<Contact />} />
+            <Route path="/resume" element={<Resume />} />
+            
+            <Route path="/contact" element={<SideNavbar />} >
+            
+              <Route  path="/contact" element={<Contact />} />
               <Route path='experience' element={<Experience />} />
               <Route path='education' element={<Education />} />
               <Route path='certifications' element={<Certifications />} />
@@ -38,8 +41,10 @@ const App = () => {
               <Route path='references' element={<References />} />
             </Route>
 
+            <Route path="/experenceForm" element={<ExperienceForm />} />
             <Route path="/educationForm" element={<EducationForm />} />
-            
+            <Route path="/referenceForm" element={<ReferenceForm />} />
+
           </Route>
           
           <Route path="*" element={<Navigate to="/sign-in" />} />

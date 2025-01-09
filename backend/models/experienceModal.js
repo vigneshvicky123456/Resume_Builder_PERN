@@ -1,9 +1,9 @@
 const { Model, DataTypes } = require("sequelize");
 const { sequelize } = require("../database");
 
-class educationModel extends Model {}
+class experienceModel extends Model {}
 
-educationModel.init(
+experienceModel.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -12,22 +12,18 @@ educationModel.init(
     },
     resume_id: {
       type: DataTypes.INTEGER,
-      allowNull: true,
+      allowNull: false,
     },
-    institution_name: {
+    job_title: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    degree_of_program: {
+    company_name: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
     },
-    cgpa: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    field_of_study: {
-      type: DataTypes.STRING,
+    address: {
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     start_date: {
@@ -38,15 +34,15 @@ educationModel.init(
       type: DataTypes.STRING,
       allowNull: true,
     },
-    additional_details: {
-      type:DataTypes.STRING,
+    description: {
+      type: DataTypes.STRING,
       allowNull: true,
-    }
+    },
   },
   {
     sequelize,
-    modelName: "education_table",
+    modelName: "experience_table",
   }
 );
 
-module.exports = educationModel;
+module.exports = experienceModel;

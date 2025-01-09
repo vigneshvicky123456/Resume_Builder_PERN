@@ -24,15 +24,15 @@ contactModel.init(
     },
     last_name: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     job_title: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     phone: {
-      type: DataTypes.NUMBER,
-      allowNull: false,
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     email: {
       type: DataTypes.STRING,
@@ -40,11 +40,11 @@ contactModel.init(
     },
     address: {
       type: DataTypes.TEXT,
-      allowNull: false,
+      allowNull: true,
     },
     date_of_birth: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     website: {
       type: DataTypes.STRING,

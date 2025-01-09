@@ -15,23 +15,15 @@ const EducationForm = () => {
     additionalDetails: "",
   });
 
-  const backButton = () => {
-    navigate("/resume/education");
+  const cancelButton = () => {
+    navigate("/contact/education");
   };
 
   const saveEducation = (values, { resetForm }) => {
-    console.log("Form data", values);
-    setEducationDetails({
-      institutionName: "",
-      degree: "",
-      cgpa: "",
-      fieldofStudy: "",
-      startDate: "",
-      endDate: "",
-      additionalDetails: "",
-    });
+    console.log("saveEducation", values);
+   
     resetForm();
-    navigate("/resume/education");
+    navigate("/contact/education");
   };
 
   return (
@@ -49,7 +41,7 @@ const EducationForm = () => {
 
               <Formik
                 initialValues={educationDetails}
-                enableReinitialize 
+                enableReinitialize
                 onSubmit={saveEducation}
               >
                 {({ values }) => (
@@ -208,7 +200,7 @@ const EducationForm = () => {
                     <div className="my-[50px] text-lg">
                       <button
                         className="bg-white w-[225px] p-3 border font-bold rounded-lg mr-4 transition-transform duration-300 ease-in-out hover:border-black hover:-translate-y-1"
-                        onClick={backButton}
+                        onClick={cancelButton}
                       >
                         Cancel
                       </button>
@@ -222,11 +214,6 @@ const EducationForm = () => {
                   </Form>
                 )}
               </Formik>
-            </div>
-          </div>
-          <div className="bg-red-200 w-[37%] relative px-5">
-            <div className="bg-yellow-200 h-full">
-              <h1>Side Page</h1>
             </div>
           </div>
         </div>

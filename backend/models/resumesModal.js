@@ -18,6 +18,10 @@ resumesModel.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    resume_template_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    }
   },
   {
     sequelize,

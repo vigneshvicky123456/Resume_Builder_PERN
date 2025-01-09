@@ -1,9 +1,17 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; 
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import EditableField from "./EditableField";
+import { useDispatch, useSelector } from "react-redux";
+import { useUser } from "@clerk/clerk-react";
+import { createContact } from "../../Features/contactSlice";
+import { getLastResume, getResumeById } from "../../Features/resumeSlice";
 
 const Contact = () => {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { user } = useUser();
+  const resume = useSelector((state) => state.resume?.resume);
+  const { getResume } = useSelector((state) => state.resume);
 
   const contactDetailsState = {
     photo: null,
@@ -17,7 +25,6 @@ const Contact = () => {
     website: "",
     linkedin: "",
   };
-
   const [contactDetails, setContactDetails] = useState(contactDetailsState);
 
   const editingContactState = {
@@ -31,7 +38,6 @@ const Contact = () => {
     website: false,
     linkedin: false,
   };
-
   const [isEditingContact, setIsEditingContact] = useState(editingContactState);
 
   const [validationErrors, setValidationErrors] = useState({});
@@ -39,7 +45,7 @@ const Contact = () => {
   const toggleEdit = (field) => {
     setIsEditingContact((prevState) => ({
       ...prevState,
-      [field]: !prevState[field], 
+      [field]: !prevState[field],
     }));
   };
 
@@ -80,7 +86,6 @@ const Contact = () => {
 
   const validateFields = () => {
     const errors = {};
-
     if (!contactDetails.email.trim()) {
       errors.email = "Email is required.";
     } else {
@@ -92,9 +97,43 @@ const Contact = () => {
     return errors;
   };
 
+  useEffect(() => {
+    if (user) {
+      dispatch(getLastResume(user.id));
+      //console.log("getLastResume user.id", user.id);
+    }
+    if (resume) {
+      console.log("getLastResume...resumeid", resume.id);
+      dispatch(
+        getResumeById({
+          accountUser_id: user.id,
+          id: resume.id,
+        })
+      );
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (getResume?.contactModel?.[0]) {
+      setContactDetails({
+        photo: null,
+        firstName: getResume?.contactModel?.[0].first_name,
+        lastName: getResume?.contactModel?.[0].last_name,
+        jobTitle: getResume?.contactModel?.[0].job_title,
+        phoneNumber: getResume?.contactModel?.[0].phone,
+        email: getResume?.contactModel?.[0].email,
+        dateOfBirth: getResume?.contactModel?.[0].date_of_birth,
+        address: getResume?.contactModel?.[0].address,
+        website: getResume?.contactModel?.[0].website,
+        linkedin: getResume?.contactModel?.[0].linkedin,
+      });
+      console.log("useeffect getResumeById...", getResume?.contactModel?.[0]);
+    }
+  }, [getResume?.contactModel?.[0]]);
+
   const saveContact = (e) => {
     e.preventDefault();
-  
+
     const errors = validateFields();
     if (Object.keys(errors).length > 0) {
       setValidationErrors(errors);
@@ -104,19 +143,30 @@ const Contact = () => {
       }));
       return;
     }
-  
-    console.log("Contact Details:", contactDetails);
-    setContactDetails(contactDetailsState);
-    setIsEditingContact(editingContactState);
+    
+    const contactData = {
+      resume_id: resume.id,
+      imageUrl: contactDetails.photo,
+      first_name: contactDetails.firstName,
+      last_name: contactDetails.lastName,
+      job_title: contactDetails.jobTitle,
+      phone: contactDetails.phoneNumber,
+      email: contactDetails.email,
+      address: contactDetails.address,
+      date_of_birth: contactDetails.dateOfBirth,
+      website: contactDetails.website,
+      linkedin: contactDetails.linkedin,
+    };
+    dispatch(createContact(contactData));
+    console.log("saveContact contactData:", contactData);
     navigate("experience");
   };
-  
 
   const cancel = () => {
     setContactDetails(contactDetailsState);
     setValidationErrors({});
   };
- 
+
   return (
     <div className="bg-blue-50 h-[full] w-[97%] px-10 py-10 flex rounded-2xl">
       <div className="h-[full] w-[63%] px-10">
@@ -130,24 +180,22 @@ const Contact = () => {
           </div>
 
           <div className="flex pb-5">
-          {contactDetails.photo ? (
-             <img
-              className="w-[110px] h-[110px] rounded-lg"
-              src={contactDetails.photo}
-              alt="Uploaded"
-            ></img> 
-          ) : (
-            <div className="w-[110px] h-[110px] bg-white rounded-lg border-[2px] border-gray-200">
-              <span className="flex justify-center pt-[40px]">O</span>
-            </div>
-          )}
-            
+            {contactDetails.photo ? (
+              <img
+                className="w-[110px] h-[110px] rounded-lg"
+                src={contactDetails.photo}
+                alt="Uploaded"
+              ></img>
+            ) : (
+              <div className="w-[110px] h-[110px] bg-white rounded-lg border-[2px] border-gray-200">
+                <span className="flex justify-center pt-[40px]">O</span>
+              </div>
+            )}
+
             <div className="pl-5 pt-5 relative">
-              <p className="pb-3">
-                Add a Photo to Your Resume (Optional)
-              </p>
+              <p className="pb-3">Add a Photo to Your Resume (Optional)</p>
               {contactDetails.photo ? (
-                <button 
+                <button
                   className="border p-1 px-3 rounded-xl transition-transform duration-300 ease-in-out hover:border-black hover:-translate-y-1"
                   onClick={handleClearPhoto}
                 >
@@ -155,20 +203,20 @@ const Contact = () => {
                 </button>
               ) : (
                 <div className=" pt-3">
-                <input
-                  id="fileInput"
-                  className="hidden"
-                  type="file"
-                  accept="image/*"
-                  onChange={handlePhotoChange}
-                />
-                <label
-                  htmlFor="fileInput"
-                  className="p-2 px-4 rounded-xl border transition-transform duration-300 ease-in-out hover:border-black hover:-translate-y-1"
-                >
-                  Add Photo
-                </label>
-              </div>
+                  <input
+                    id="fileInput"
+                    className="hidden"
+                    type="file"
+                    accept="image/*"
+                    onChange={handlePhotoChange}
+                  />
+                  <label
+                    htmlFor="fileInput"
+                    className="p-2 px-4 rounded-xl border transition-transform duration-300 ease-in-out hover:border-black hover:-translate-y-1"
+                  >
+                    Add Photo
+                  </label>
+                </div>
               )}
             </div>
           </div>

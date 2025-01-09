@@ -1,25 +1,21 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const accountUser = createAsyncThunk("auth/accountUser", async (userDetails) => {
-  console.log('ASYNC userDetails',userDetails);
-  
-  const response = await axios.post("http://localhost:5000/accountUser/register",userDetails);
+export const accountUser = createAsyncThunk('auth/accountUser', async (userDetails) => {
+  const response = await axios.post("http://localhost:5000/accountUser/register", userDetails);
   return response.data;
 });
 
-
-export const getAccountUser = createAsyncThunk("auth/getAccountUser", async () => {
-  const response = await axios.get("http://localhost:5000/accountUser/me");
-  console.log('ASYNC userDetails',response.data);
-  return response.data;
+export const getAccountUser = createAsyncThunk('auth/getAccountUser', async (clerkUserId) => {
+  const response = await axios.get(`http://localhost:5000/accountUser/${clerkUserId}`);
+  return response.data.user;
 });
 
 const authSlice = createSlice({
   name: "auth",
   initialState: {
     userDetails: {},
-    userData:[],
+    userData:null,
     status: null,
   },
   reducers: {
@@ -33,7 +29,7 @@ const authSlice = createSlice({
       .addCase(accountUser.fulfilled, (state, action) => {
         state.userDetails.push(action.payload);
         state.status = "success";
-        console.log("slice user", state.userDetails);
+        console.log("slice accountUser userDetails", state.userDetails);
       })
       .addCase(accountUser.rejected, (state) => {
         state.status = "failed";

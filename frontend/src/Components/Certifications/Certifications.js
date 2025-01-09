@@ -1,11 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 const Certifications = () => {
   const navigate = useNavigate();
   const inputRefs = useRef([]);
 
   const [certifications, setCertifications] = useState([
-    { id: 1, value: "", isEditing: true },
+    { 
+      id: 1, 
+      value: "", 
+      isEditing: false 
+    },
   ]);
 
   useEffect(() => {
@@ -20,7 +25,7 @@ const Certifications = () => {
     const newCertificate = {
       id: certifications.length + 1,
       value: "",
-      isEditing: true,
+      isEditing: false,
     };
     setCertifications([...certifications, newCertificate]);
   };
@@ -47,9 +52,17 @@ const Certifications = () => {
   };
 
   const handleToggleEdit = (id, isEditing) => {
-    setCertifications(
-      certifications.map((cert) =>
-        cert.id === id ? { ...cert, isEditing } : cert
+    setCertifications((prevCertifications) =>
+      prevCertifications.map((cert) =>
+        cert.id === id ? { ...cert, isEditing } : { ...cert, isEditing: false }
+      )
+    );
+  };
+
+  const handleBlur = (id) => {
+    setCertifications((prevCertifications) =>
+      prevCertifications.map((cert) =>
+        cert.id === id ? { ...cert, isEditing: false } : cert
       )
     );
   };
@@ -76,12 +89,24 @@ const Certifications = () => {
           {certifications.map((cert, index) => (
             <div key={cert.id} className="relative mb-6">
               {!cert.isEditing && !cert.value.trim() ? (
-                <p
-                  className="text-gray-400 bg-white p-3 border rounded-lg cursor-pointer"
-                  onClick={() => handleToggleEdit(cert.id, true)}
-                >
-                  License or certification {cert.id}
-                </p>
+                <div className="relative">
+                  <p
+                    className="flex justify-between items-center text-gray-400 bg-white p-3 border rounded-lg cursor-pointer"
+                    onClick={() => handleToggleEdit(cert.id, true)}
+                  >
+                    <span>License or certification {cert.id}</span>
+                    <span
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteCertificate(cert.id);
+                      }}
+                      className="text-red-500 hover:text-red-700 cursor-pointer"
+                      title="Delete"
+                    >
+                      Delete
+                    </span>
+                  </p>
+                </div>
               ) : (
                 <div className="relative bg-white px-2 border-2 rounded-lg focus-within:border-black">
                   <label className="text-xs text-gray-400 block mb-1 flex items-center">
@@ -98,9 +123,7 @@ const Certifications = () => {
                     onChange={(e) =>
                       handleUpdateCertificate(cert.id, e.target.value)
                     }
-                    onBlur={() =>
-                      !cert.value.trim() && handleToggleEdit(cert.id, false)
-                    }
+                    onBlur={() => handleBlur(cert.id)}
                     className="pb-1 w-[83%] outline-none"
                     placeholder="License or certification"
                   />

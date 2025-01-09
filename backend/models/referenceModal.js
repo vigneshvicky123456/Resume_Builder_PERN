@@ -1,9 +1,9 @@
 const { Model, DataTypes } = require("sequelize");
 const { sequelize } = require("../database");
 
-class educationModel extends Model {}
+class referenceModel extends Model {}
 
-educationModel.init(
+referenceModel.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -12,41 +12,41 @@ educationModel.init(
     },
     resume_id: {
       type: DataTypes.INTEGER,
-      allowNull: true,
+      allowNull: false,
     },
-    institution_name: {
+    first_name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    last_name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    position_title: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    phone: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    degree_of_program: {
+    company_name: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
     },
-    cgpa: {
+    relationship_to_you: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
     },
-    field_of_study: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    start_date: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    end_date: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    additional_details: {
-      type:DataTypes.STRING,
-      allowNull: true,
-    }
   },
   {
     sequelize,
-    modelName: "education_table",
+    modelName: "reference_table",
   }
 );
 
-module.exports = educationModel;
+module.exports = referenceModel;
